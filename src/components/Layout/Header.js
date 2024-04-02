@@ -25,8 +25,8 @@ const navigate=useNavigate();
 
   function logout(){
     Cookies.remove('Email');
+    Cookies.remove('Customerid');
     navigate('/login')
-    
   }
 
    //menu drawer

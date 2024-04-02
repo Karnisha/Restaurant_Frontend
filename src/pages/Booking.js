@@ -9,7 +9,7 @@ function Booking() {
     const [customerID, setCustomerID] = useState('');
     const email = Cookies.get('Email');
     const [values, setValues] = useState({
-        customer_Id: '',
+        customer_Id:customerID,
         date: '',
         time: '',
         restaurant_Id: 1, // Assuming you have a way to get the restaurant ID
@@ -21,28 +21,23 @@ function Booking() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        
         axios.post('https://localhost:7092/api/Customer_Details/FindEmail', {
             customer_Email: email
         })
             .then(res => {
                 console.log("fetch", res.data.customer_Id);
                 setCustomerID(res.data.customer_Id);
+                Cookies.set('Customerid', res.data.customer_Id, { expires: 7 });
             })
             .catch(err => console.log(err));
     }, [email]);
-
     useEffect(() => {
         setValues({ ...values, customer_Id: customerID });
     }, [customerID]);
-
     const handleChange = (e) => {
         console.log(values)
         setValues({ ...values, [e.target.name]: e.target.value });
-       
-        
-
-
+    
     };
     const handletable=()=>{
         axios.post(`https://localhost:7092/api/CheckTable` ,{date:values.date,time:values.time}).then((response) => {
@@ -100,7 +95,7 @@ function Booking() {
         e.preventDefault();
         if (validateForm()) {
             try {
-                const response = await axios.post('https://localhost:7092/api/Reservation', values);
+                const response = await axios.post('https://localhost:7092/api/Reservation/BookReservation', values);
                 console.log(response.data);
                 window.alert('Table is Booked Successfully');
                 navigate('/bookingview');
